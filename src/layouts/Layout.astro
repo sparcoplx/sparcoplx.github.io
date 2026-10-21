@@ -1,0 +1,36 @@
+---
+import SEOHead from '../components/SEOHead.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+  noindex?: boolean;
+  lang?: 'es' | 'en';
+}
+
+const {
+  title,
+  description = 'Currículum profesional de Félix Vilches, Ingeniero Civil en Computación e Informática y Profesor Técnico Profesional especializado en Telecomunicaciones.',
+  noindex = false,
+  lang = 'es',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{title}</title>
+
+    <SEOHead title={title} description={description} noindex={noindex} lang={lang} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <slot name="head" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

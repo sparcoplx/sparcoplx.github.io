@@ -1,0 +1,456 @@
+---
+// CV de una hoja para imprimir o guardar como PDF. Incluye los datos personales completos
+// (RUT, dirección, etc.) y se marca como noindex para que no aparezca en Google.
+import Layout from '../layouts/Layout.astro';
+import {
+  personal,
+  profile,
+  experiences,
+  education,
+  courses,
+  skillGroups,
+  softSkills,
+  volunteerWork,
+  type Lang,
+} from '../data/cv';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const t = {
+  es: {
+    pageTitle: `CV – ${personal.name}`,
+    rut: 'RUT',
+    phone: 'Teléfono',
+    birth: 'Nacimiento',
+    status: 'Estado civil',
+    nationality: 'Nacionalidad',
+    profile: 'Perfil Profesional',
+    experience: 'Experiencia Laboral',
+    education: 'Formación Académica',
+    courses: 'Cursos Complementarios',
+    skills: 'Aptitudes',
+    softSkills: 'Transversales',
+    volunteer: 'Trabajo Voluntario',
+    qrTitle: 'Versión completa del currículum disponible en:',
+    qrText: 'Incluye experiencia detallada, formación complementaria completa y contacto directo.',
+    print: 'Imprimir / Guardar PDF',
+    pdfHint: 'Para PDF elige «Guardar como PDF» como impresora.',
+    other: { href: '/print-en', label: 'English version' },
+    back: 'Volver a la web',
+  },
+  en: {
+    pageTitle: `Resume – ${personal.name}`,
+    rut: 'National ID (RUT)',
+    phone: 'Phone',
+    birth: 'Born',
+    status: 'Marital status',
+    nationality: 'Nationality',
+    profile: 'Professional Profile',
+    experience: 'Work Experience',
+    education: 'Academic Background',
+    courses: 'Complementary Courses',
+    skills: 'Skills',
+    softSkills: 'Soft skills',
+    volunteer: 'Volunteer Work',
+    qrTitle: 'Full résumé available at:',
+    qrText: 'Includes detailed experience, complete training and direct contact.',
+    print: 'Print / Save PDF',
+    pdfHint: 'For a PDF, choose “Save as PDF” as the printer.',
+    other: { href: '/print', label: 'Versión en español' },
+    back: 'Back to website',
+  },
+}[lang];
+
+const p = personal.private;
+const printable = <T extends { print?: boolean }>(items: T[]) => items.filter((i) => i.print !== false);
+---
+
+<Layout title={t.pageTitle} description={personal.subtitle[lang]} lang={lang} noindex>
+  <div class="toolbar">
+    <a href="/">← {t.back}</a>
+    <a href={t.other.href} hreflang={lang === 'es' ? 'en' : 'es'}>{t.other.label}</a>
+    <button type="button" id="print-btn">{t.print}</button>
+    <span class="hint">{t.pdfHint}</span>
+  </div>
+
+  <div class="print-cv">
+    <header class="header">
+      <div>
+        <h1>{personal.name}</h1>
+        <p class="subtitle">{personal.title[lang]}</p>
+        <p class="title">{personal.subtitle[lang]}</p>
+      </div>
+      <div class="contact-info">
+        <p><strong>{t.rut}:</strong> {p.rut}</p>
+        <p><strong>{t.phone}:</strong> {personal.phoneDisplay}</p>
+        <p><strong>Email:</strong> {personal.email}</p>
+        <p><strong>Web:</strong> {personal.website}</p>
+        <p>{p.address}</p>
+        <p class="personal">
+          {t.birth}: {p.birthDate[lang]} · {t.status}: {p.status[lang]} · {t.nationality}: {p.nationality[lang]}
+        </p>
+      </div>
+    </header>
+
+    <section class="section">
+      <h2>{t.profile}</h2>
+      <p class="profile-text">{profile[lang]}</p>
+    </section>
+
+    <section class="section">
+      <h2>{t.experience}</h2>
+      {
+        printable(experiences).map((exp) => (
+          <div class="item">
+            <div class="item-head">
+              <h3>{exp.title[lang]}</h3>
+              <span class="period">{exp.period[lang]}</span>
+            </div>
+            <p class="company">{exp.company}</p>
+            <p class="description">{(exp.short ?? exp.description)[lang]}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="section">
+      <h2>{t.education}</h2>
+      {
+        printable(education).map((edu) => (
+          <div class="item">
+            <div class="item-head">
+              <h3>{edu.degree[lang]}</h3>
+              <span class="period">{edu.period}</span>
+            </div>
+            <p class="company">{edu.institution}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="section">
+      <h2>{t.courses}</h2>
+      <ul class="courses-list">
+        {printable(courses).map((c) => <li>{c.short[lang]}</li>)}
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>{t.skills}</h2>
+      <dl class="skills">
+        {
+          skillGroups.map((g) => (
+            <div>
+              <dt>{g.category[lang]}:</dt>
+              <dd>{g.skills.map((s) => s[lang]).join(', ')}</dd>
+            </div>
+          ))
+        }
+        <div>
+          <dt>{t.softSkills}:</dt>
+          <dd>{softSkills.map((s) => s[lang]).join(', ')}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="section">
+      <h2>{t.volunteer}</h2>
+      {
+        volunteerWork.map((v) => (
+          <div class="item">
+            <div class="item-head">
+              <h3>{v.title[lang]}</h3>
+              <span class="period">{v.period}</span>
+            </div>
+            <p class="company">{v.organization[lang]}</p>
+            <p class="description">{v.short[lang]}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <section class="qr-section">
+      <img src="/images/qr.png" alt={`QR – ${personal.website}`} width="90" height="90" />
+      <div class="qr-text">
+        <p><strong>{t.qrTitle}</strong></p>
+        <p class="qr-url">{personal.website}</p>
+        <p>{t.qrText}</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const btn = document.getElementById('print-btn');
+    btn?.addEventListener('click', () => window.print());
+    // /print?imprimir=1 (botón «Descargar CV» de la web) abre el diálogo de impresión directamente.
+    if (new URLSearchParams(location.search).has('imprimir')) {
+      window.addEventListener('load', () => setTimeout(() => window.print(), 300));
+    }
+  </script>
+</Layout>
+
+<style is:global>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.4;
+    color: #333;
+    background: #e5e7eb;
+    font-size: 12px;
+  }
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  @media print {
+    body {
+      background: #fff;
+    }
+  }
+</style>
+
+<style>
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 1.25rem;
+    padding: 0.75rem 1rem;
+    background: #1e293b;
+    font-size: 0.95rem;
+  }
+
+  .toolbar a {
+    color: #bfdbfe;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .toolbar a:hover {
+    text-decoration: underline;
+  }
+
+  .toolbar button {
+    background: #2563eb;
+    color: #fff;
+    border: 0;
+    border-radius: 0.4rem;
+    padding: 0.5rem 1rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .toolbar .hint {
+    color: #94a3b8;
+    font-size: 0.8rem;
+  }
+
+  .print-cv {
+    max-width: 210mm;
+    margin: 1.5rem auto;
+    padding: 15mm;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .header {
+    border-bottom: 3px solid #2563eb;
+    padding-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 0.4rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+
+  .title {
+    font-size: 1rem;
+    color: #666;
+  }
+
+  .contact-info {
+    text-align: right;
+    font-size: 0.9rem;
+  }
+
+  .contact-info p {
+    margin-bottom: 0.2rem;
+  }
+
+  .contact-info .personal {
+    max-width: 22em;
+    margin-left: auto;
+    color: #555;
+    font-size: 0.82rem;
+  }
+
+  .section {
+    margin-bottom: 1.1rem;
+  }
+
+  .section h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #2563eb;
+    border-bottom: 1px solid #2563eb;
+    padding-bottom: 0.2rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .item {
+    margin-bottom: 0.7rem;
+    break-inside: avoid;
+  }
+
+  .item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .item h3 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .period {
+    font-size: 0.85rem;
+    color: #2563eb;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .company {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+    margin: 0.1rem 0 0.25rem;
+  }
+
+  .description,
+  .profile-text,
+  .courses-list {
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .profile-text {
+    text-align: justify;
+  }
+
+  .courses-list {
+    padding-left: 1.2rem;
+  }
+
+  .courses-list li + li {
+    margin-top: 0.2rem;
+  }
+
+  .skills {
+    font-size: 0.9rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .skills dt {
+    display: inline;
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .skills dd {
+    display: inline;
+    margin-left: 0.3rem;
+  }
+
+  .qr-section {
+    border-top: 2px solid #2563eb;
+    padding-top: 0.9rem;
+    margin-top: 0.9rem;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    align-items: center;
+    break-inside: avoid;
+  }
+
+  .qr-section img {
+    border: 2px solid #2563eb;
+    border-radius: 0.5rem;
+  }
+
+  .qr-text {
+    font-size: 0.85rem;
+  }
+
+  .qr-text p + p {
+    margin-top: 0.3rem;
+  }
+
+  .qr-url {
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 700px) {
+    .print-cv {
+      margin: 0;
+      padding: 1.25rem;
+      box-shadow: none;
+    }
+
+    .header {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-info {
+      text-align: left;
+    }
+
+    .contact-info .personal {
+      margin-left: 0;
+    }
+  }
+
+  @media print {
+    .toolbar {
+      display: none;
+    }
+
+    .print-cv {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+    }
+  }
+</style>

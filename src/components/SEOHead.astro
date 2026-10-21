@@ -1,0 +1,62 @@
+---
+import { personal, experiences, education } from '../data/cv';
+
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  /** true = la página no aparece en buscadores (versiones imprimibles con datos personales). */
+  noindex?: boolean;
+  lang?: 'es' | 'en';
+}
+
+const { title, description, image = '/og-image.jpg', noindex = false, lang = 'es' } = Astro.props;
+const site = Astro.site ?? new URL(personal.url);
+const canonicalURL = new URL(Astro.url.pathname, site).href;
+const imageURL = new URL(image, site).href;
+
+const current = experiences[0];
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: personal.name,
+  jobTitle: personal.title.es,
+  description: personal.subtitle.es,
+  url: personal.url,
+  image: new URL('/og-image.jpg', site).href,
+  email: `mailto:${personal.email}`,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Temuco',
+    addressRegion: 'Araucanía',
+    addressCountry: 'CL',
+  },
+  alumniOf: [...new Set(education.map((e) => e.institution))].map((name) => ({
+    '@type': 'EducationalOrganization',
+    name,
+  })),
+  worksFor: { '@type': 'Organization', name: current.company },
+  sameAs: [personal.linkedin, personal.github].filter(Boolean),
+};
+---
+
+<meta name="description" content={description} />
+<meta name="author" content={personal.name} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+{!noindex && <link rel="canonical" href={canonicalURL} />}
+
+<!-- Open Graph / redes sociales -->
+<meta property="og:type" content="profile" />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={imageURL} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content={lang === 'es' ? 'es_CL' : 'en_US'} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageURL} />
+
+{!noindex && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

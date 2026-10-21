@@ -1,0 +1,584 @@
+/* Estilos de la página web del CV (index). La versión imprimible tiene los suyos en PrintCV.astro. */
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --secondary: #475569;
+  --accent: #f1f5f9;
+  --surface: #ffffff;
+  --bg: #ffffff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --meter-empty: #dbe3ee;
+  --shadow: rgba(15, 23, 42, 0.06);
+  --nav-height: 3.75rem;
+}
+
+/* Modo oscuro: sigue al sistema, salvo que el visitante haya elegido otro con el botón (data-theme). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --primary: #60a5fa;
+    --primary-dark: #1e40af;
+    --secondary: #94a3b8;
+    --accent: #1e293b;
+    --surface: #0f172a;
+    --bg: #0b1120;
+    --text: #e2e8f0;
+    --text-light: #94a3b8;
+    --border: #334155;
+    --meter-empty: #334155;
+    --shadow: rgba(0, 0, 0, 0.4);
+  }
+}
+
+:root[data-theme='dark'] {
+  --primary: #60a5fa;
+  --primary-dark: #1e40af;
+  --secondary: #94a3b8;
+  --accent: #1e293b;
+  --surface: #0f172a;
+  --bg: #0b1120;
+  --text: #e2e8f0;
+  --text-light: #94a3b8;
+  --border: #334155;
+  --meter-empty: #334155;
+  --shadow: rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + 1rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  /* Fuente del sistema: 0 KB de descarga (Segoe UI en Windows, San Francisco en Apple, Roboto en Android) */
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  color: var(--primary);
+}
+
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ─── Cabecera ─────────────────────────────── */
+.header {
+  background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+  color: #fff;
+  padding: 3.5rem 0;
+}
+
+.header-content {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.profile-image {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.25);
+  object-fit: cover;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.header h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.header .subtitle {
+  font-size: 1.2rem;
+  opacity: 0.95;
+}
+
+.header .tagline {
+  font-size: 1rem;
+  opacity: 0.85;
+  margin-bottom: 1.25rem;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+}
+
+.btn-light {
+  background: #fff;
+  color: #1d4ed8;
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.header :focus-visible {
+  outline-color: #fff;
+}
+
+/* ─── Navegación ───────────────────────────── */
+.nav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 10px var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0.7rem 0;
+}
+
+.theme-toggle {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle[hidden] {
+  display: none;
+}
+
+.theme-toggle:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.theme-toggle svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+/* Muestra la luna en modo claro (para pasar a oscuro) y el sol en modo oscuro */
+.theme-toggle .icon-sun,
+.theme-toggle[aria-pressed='true'] .icon-moon {
+  display: none;
+}
+
+.theme-toggle[aria-pressed='true'] .icon-sun {
+  display: block;
+}
+
+.nav-links a {
+  display: block;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover {
+  background: var(--accent);
+  color: var(--primary);
+}
+
+.nav-links a[aria-current='true'] {
+  background: var(--primary);
+  color: var(--surface);
+}
+
+/* ─── Contenido ────────────────────────────── */
+.main-content {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) 2fr;
+  gap: 3rem;
+  padding: 3rem 0;
+}
+
+.sidebar {
+  display: grid;
+  gap: 2rem;
+  align-content: start;
+}
+
+.panel {
+  background: var(--accent);
+  padding: 1.75rem;
+  border-radius: 1rem;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary);
+}
+
+.contact-list {
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+  font-size: 0.92rem;
+}
+
+.contact-list li {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr;
+  align-items: start;
+  overflow-wrap: anywhere;
+}
+
+.contact-list a {
+  text-decoration: none;
+}
+
+.contact-list a:hover {
+  text-decoration: underline;
+}
+
+.icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: 0.2rem;
+  color: var(--primary);
+}
+
+.content-section + .content-section {
+  margin-top: 3rem;
+}
+
+.content-title {
+  font-size: 1.7rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--primary);
+}
+
+.subsection-title {
+  color: var(--primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+}
+
+.subsection-title:first-of-type {
+  margin-top: 0;
+}
+
+.profile-content {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+/* Línea de tiempo de experiencia */
+.timeline {
+  list-style: none;
+  position: relative;
+  padding-left: 1.75rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.4rem;
+  top: 0.6rem;
+  bottom: 0.6rem;
+  width: 2px;
+  background: var(--border);
+}
+
+/* Ítems de experiencia/formación: sin caja, separados por una línea suave */
+.card {
+  position: relative;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.card:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.timeline .card + .card,
+.card-list .card + .card {
+  margin-top: 1.5rem;
+}
+
+.timeline .card::before {
+  content: '';
+  position: absolute;
+  left: calc(-1.75rem + 0.4rem - 5px);
+  top: 0.45rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+.timeline .card:first-child::before {
+  box-shadow: 0 0 0 4px var(--bg), 0 0 0 6px var(--primary);
+}
+
+.card-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  align-items: baseline;
+}
+
+.card-title {
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.card-period {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.card-org {
+  color: var(--text-light);
+  font-style: italic;
+  margin: 0.15rem 0 0.75rem;
+}
+
+.card-org .status {
+  font-style: normal;
+}
+
+.card-org:last-child {
+  margin-bottom: 0;
+}
+
+.card-list-plain {
+  list-style: none;
+}
+
+.bullets {
+  margin: 0.75rem 0 0 1.1rem;
+  color: var(--text-light);
+  font-size: 0.93rem;
+}
+
+.bullets li + li {
+  margin-top: 0.25rem;
+}
+
+.courses {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.course {
+  border-left: 3px solid var(--primary);
+  padding: 0.15rem 0 0.15rem 0.9rem;
+}
+
+.course h4 {
+  font-weight: 600;
+  font-size: 0.98rem;
+  margin-bottom: 0.25rem;
+}
+
+.course p {
+  color: var(--text-light);
+  font-size: 0.88rem;
+}
+
+.course .meta {
+  color: var(--primary);
+  font-size: 0.82rem;
+  margin-top: 0.35rem;
+}
+
+/* ─── Pie ──────────────────────────────────── */
+.footer {
+  background: #1e293b;
+  color: #e2e8f0;
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: #93c5fd;
+}
+
+/* ─── Responsive ───────────────────────────── */
+@media (max-width: 900px) {
+  .main-content {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  /* En una columna, lo importante primero: Perfil → Experiencia → Aptitudes → Formación → Voluntariado → Contacto */
+  .sidebar,
+  .content {
+    display: contents;
+  }
+
+  .content-section + .content-section {
+    margin-top: 0;
+  }
+
+  #perfil { order: 1; }
+  #experiencia { order: 2; }
+  #aptitudes { order: 3; }
+  #formacion { order: 4; }
+  #voluntariado { order: 5; }
+  #contacto { order: 6; }
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 2.5rem 0;
+  }
+
+  .header-content {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 1.25rem;
+  }
+
+  .header-actions {
+    justify-content: center;
+  }
+
+  .profile-image {
+    width: 128px;
+    height: 128px;
+  }
+
+  .header h1 {
+    font-size: 1.75rem;
+  }
+
+  /* Menú horizontal deslizable en vez de envolverse en varias filas */
+  .nav-links {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0.6rem 0;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .content-title {
+    font-size: 1.4rem;
+  }
+}
+
+/* Si alguien imprime la web directamente, se imprime limpia (el CV para entregar está en /print). */
+@media print {
+  .nav,
+  .footer,
+  .header-actions {
+    display: none;
+  }
+
+  .header {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .course {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+}

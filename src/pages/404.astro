@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Página no encontrada – Félix Vilches" noindex>
+  <main class="not-found">
+    <h1>404</h1>
+    <h2>Página no encontrada</h2>
+    <p>Lo sentimos, la página que buscas no existe.</p>
+    <a href="/">Volver al inicio</a>
+  </main>
+</Layout>
+
+<style>
+  .not-found {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    text-align: center;
+    padding: 4rem 1rem;
+  }
+  h1 {
+    font-size: 4rem;
+    color: #2563eb;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  p {
+    margin-bottom: 2rem;
+    color: #64748b;
+  }
+  a {
+    display: inline-block;
+    background: #2563eb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+  }
+</style>

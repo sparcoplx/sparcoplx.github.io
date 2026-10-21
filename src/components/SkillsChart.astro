@@ -1,0 +1,103 @@
+---
+// Aptitudes por área. Las áreas principales (con `evidence`) muestran sus herramientas
+// y dónde se han aplicado; el resto se muestra como etiquetas. Datos en src/data/cv.ts.
+import { skillGroups, softSkills, type Lang } from '../data/cv';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'es' } = Astro.props;
+const main = skillGroups.filter((g) => g.evidence?.length);
+const others = skillGroups.filter((g) => !g.evidence?.length);
+---
+
+<div class="skills">
+  {
+    main.map((group) => (
+      <div class="area">
+        <h3 class="area-title">{group.category[lang]}</h3>
+        <p class="area-skills">{group.skills.map((s) => s[lang]).join(' · ')}</p>
+        <ul class="evidence" aria-label={lang === 'es' ? 'Respaldo' : 'Background'}>
+          {group.evidence!.map((e) => (
+            <li>{e[lang]}</li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+
+  {
+    others.map((group) => (
+      <div class="area">
+        <h3 class="area-title">{group.category[lang]}</h3>
+        <ul class="tags">
+          {group.skills.map((s) => (
+            <li class="tag">{s[lang]}</li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+
+  <div class="area">
+    <h3 class="area-title">{lang === 'es' ? 'Habilidades transversales' : 'Soft skills'}</h3>
+    <ul class="tags">
+      {softSkills.map((s) => <li class="tag">{s[lang]}</li>)}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .skills {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .area-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--primary);
+    margin-bottom: 0.35rem;
+  }
+
+  .area-skills {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    margin-bottom: 0.5rem;
+  }
+
+  .evidence,
+  .tags {
+    list-style: none;
+  }
+
+  .evidence {
+    border-left: 2px solid var(--meter-empty);
+    padding-left: 0.75rem;
+    display: grid;
+    gap: 0.2rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text-light);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.65rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+</style>
